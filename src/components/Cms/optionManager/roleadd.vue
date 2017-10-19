@@ -5,7 +5,16 @@
         <div class="form-group">
           <label class="col-sm-2 control-label">名称:</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" v-model="goodData.name" required>
+            <input type="text" class="form-control" v-model="roleData.name" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">状态:</label>
+          <div class="col-sm-10">
+            <select name="" id="" class="form-control" v-model="roleData.status">
+              <option value="0">无效</option>
+              <option value="1">有效</option>
+            </select>
           </div>
         </div>
         <div class="form-group">
@@ -23,23 +32,25 @@ export default {
   name: 'add',
   data () {
     return {
-      shopsList: [],
-      goodData: {
-        name: ''
+      roleData: {
+        name: '',
+        status: 1
       }
     }
   },
   mounted () {
+    console.log(this.$route)
     if (this.$route.query.id) {
       this.$ajax(
         {
           method: 'get',
-          url: '/cms/searchGoodsType?id=' + this.$route.query.id
+          url: '/cms/searchRole?id=' + this.$route.query.id
         }
         ).then(
           function (res) {
             if (res.data.code === 0) {
-              this.goodData = res.data.data
+              this.roleData = res.data.data
+              this.roleData.id = this.$route.query.id
             }
           }
           .bind(this)
@@ -51,16 +62,16 @@ export default {
       this.$ajax(
         {
           method: 'post',
-          url: '/cms/saveGoodsType',
-          data: this.goodData
+          url: '/cms/saveRole',
+          data: this.roleData
         }
       ).then(
         function (res) {
           if (res.data.code === 0) {
-            this.msgShow(res.data.message)
-            this.$router.push({name: 'goodManagertypeSearch'})
+            this.$parent.msgShow(res.data.message)
+            this.$router.push({name: 'optionManagerrolesearch'})
           } else {
-            this.msgShow(res.data.message)
+            this.$parent.msgShow(res.data.message)
           }
         }
         .bind(this)

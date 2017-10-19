@@ -32,6 +32,17 @@ fn.saveProfile = function (user,_fn) {
         }
     })
 }
+fn.setUserLogintime = function (user,_fn) {
+    mysql.setUserLogintime(user,function(data){
+        if(data.status){
+            fn.updateUsers(function(){
+                _fn(true)
+            })
+        }else{
+            _fn(false)
+        }
+    })
+}
 fn.loginedCheck = function(req){
     if(req.session && req.session.username){
         return req.session.username;
@@ -46,6 +57,7 @@ fn.appLoginedCheck = function(username,loginTime,tocken){
     return false;
 }
 fn.setLoginSession = function(req,user){
+    fn.setUserLogintime(user,function(){})
     req.session.username = user.username;
     req.session.tocken = user.tocken;
     console.log("保存登陆session");

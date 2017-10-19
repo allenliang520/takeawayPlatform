@@ -2,28 +2,28 @@
   <div id="cms">
     <div class="container">
       <div id="menu" class="col-xs-2">
-        <router-view name="menu"></router-view>
+        <cms-menu v-if="showMenu"></cms-menu>
       </div>
-      <div id="main" class="col-xs-10" v-if="this.$route.name == (this.$route.params.classKey+this.$route.params.key)">
-        <router-view name="main"></router-view>
+      <div id="main" class="col-xs-10">
+        <router-view></router-view>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import MenuObj from '@/menu.config'
+import Menu from '@/components/Cms/Menu'
 export default {
   name: 'cms',
+  components: {
+    'cms-menu': Menu
+  },
   data () {
     return {
-      menuList: MenuObj.menuList
+      showMenu: true
     }
   },
   mounted () {
-    if (this.$route.name !== (this.$route.params.classKey + this.$route.params.key)) {
-      this.$router.push({name: (this.$route.params.classKey + this.$route.params.key), params: {classKey: this.$route.params.classKey, key: this.$route.params.key}})
-    }
   },
   methods: {
   }

@@ -56,7 +56,12 @@ export default {
           if (res.data.code === 0) {
             this.GLOBAL.userinfo = res.data.data
             this.$parent.userinfo = res.data.data
-            this.$router.push('/')
+            this.$parent.getMenu()
+            if (this.$route.query.to) {
+              this.$router.push({path: decodeURI(this.$route.query.to), query: JSON.parse(decodeURI(this.$route.query.query))})
+            } else {
+              this.$router.push('/')
+            }
           } else {
             this.$parent.msgShow(res.data.message)
           }

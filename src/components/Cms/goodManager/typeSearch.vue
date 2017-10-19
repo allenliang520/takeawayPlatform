@@ -16,7 +16,7 @@
           <td>{{o.id}}</td>
           <td>{{o.name}}</td>
           <td>
-            <router-link class="btn btn-default btn-sm" :to="{name:'goodManagertypeAdd',params:{classKey:'goodManager',key:'typeAdd'},query:{id:o.id}}">
+            <router-link class="btn btn-default btn-sm" :to="{name:'goodManagertypeAdd',query:{id:o.id}}">
               编辑
             </router-link>
           </td>

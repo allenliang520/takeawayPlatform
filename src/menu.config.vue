@@ -1,13 +1,5 @@
 <script>
-import Menu from '@/components/Cms/Menu'
-var imp = {
-  shopManageradd: resolve => require(['@/components/Cms/shopManager/add'], resolve),
-  shopManagersearch: resolve => require(['@/components/Cms/shopManager/search'], resolve),
-  goodManageradd: resolve => require(['@/components/Cms/goodManager/add'], resolve),
-  goodManagersearch: resolve => require(['@/components/Cms/goodManager/search'], resolve),
-  goodManagertypeAdd: resolve => require(['@/components/Cms/goodManager/typeAdd'], resolve),
-  goodManagertypeSearch: resolve => require(['@/components/Cms/goodManager/typeSearch'], resolve)
-}
+var imp = {}
 var menu = {}
 menu.menuList = [
   {
@@ -74,31 +66,21 @@ menu.menuList = [
   }
 ]
 menu.menuRouter = []
-var menuDefault = {
-  path: '/',
-  name: 'menu',
-  components: {
-    menu: Menu
-  }
-}
-menu.menuRouter.push(menuDefault)
-for (var i = 0; i < menu.menuList.length; i++) {
-  for (var n = 0; n < menu.menuList[i].children.length; n++) {
+menu.menuList.forEach(function (t) {
+  t.children.forEach(function (n) {
     var o = {}
     o.path = ':classKey'
-    o.name = menu.menuList[i].classKey + menu.menuList[i].children[n].key
-    o.components = {}
-    o.components.menu = Menu
+    o.name = t.classKey + n.key
     o.path += '/:key/' + o.name
-    if (menu.menuList[i].children[n].params) {
-      for (var k = 0; k < menu.menuList[i].children[n].params.length; k++) {
-        o.path += (k === 0 ? '?' : '&') + '' + menu.menuList[i].children[n].params[k]
+    if (n.params) {
+      for (var k = 0; k < n.params.length; k++) {
+        o.path += (k === 0 ? '?' : '&') + '' + n.params[k]
       }
     }
-    o.components.main = imp[menu.menuList[i].classKey + menu.menuList[i].children[n].key]
+    imp[t.classKey + n.key] = resolve => require(['@/components/Cms/' + t.classKey + '/' + n.key], resolve)
+    o.component = imp[t.classKey + n.key]
     menu.menuRouter.push(o)
-  }
-}
-console.log(menu)
+  }, this)
+}, this)
 export default menu
 </script>

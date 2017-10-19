@@ -2,13 +2,13 @@
     <div>
         <nav class="">
             <ul class="nav">
-                <li  v-for="m in menuList" :class="{'active':m.classKey == $route.params.classKey}">
+                <li  v-for="m in menuList" :class="{'active': $route.name.indexOf(m.classKey) >= 0}" v-if="m.children && m.children.length>0">
                   <a href="javascript:;" class="menuClass">
                     {{m.className}}
                   </a>
                   <ul class="nav">
-                    <li class="" v-for="c in m.children" :class="{'active':c.key == $route.params.key || c.actKey == $route.params.key}" v-if="c.show">
-                      <router-link :to="{name:m.classKey+c.key,params:{classKey:m.classKey,key:c.key}}">
+                    <li class="" v-for="c in m.children" :class="{'active':m.classKey+c.key == $route.name || m.classKey+c.activeKey == $route.name}" v-if="c.show == 'true' || c.show == true">
+                      <router-link :to="{name:m.classKey+c.key}">
                         {{c.name}}
                       </router-link>
                     </li>
@@ -26,13 +26,16 @@
 
 <script>
 export default {
-  name: 'menu',
+  name: 'cms-menu',
   data () {
     return {
-      menuList: this.$parent.menuList
+      menuList: this.$parent.$parent.menuList
     }
   },
   mounted () {
+    this.$watch('$parent.$parent.menuList', function (nv, ov) {
+      this.$set(this, 'menuList', nv)
+    })
   },
   methods: {
     refresh: function () {

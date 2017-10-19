@@ -97,7 +97,7 @@ export default {
         function (res) {
           if (res.data.code === 0) {
             this.$parent.msgShow(res.data.message)
-            this.$router.push({name: 'shopManagersearch', params: {classKey: 'shopManager', key: 'search'}})
+            this.$router.push({name: 'shopManagersearch'})
           } else {
             this.$parent.msgShow(res.data.message)
           }

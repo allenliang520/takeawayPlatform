@@ -5,7 +5,13 @@
         <div class="form-group">
           <label class="col-sm-2 control-label">名称:</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" v-model="goodData.name" required>
+            <input type="text" class="form-control" v-model="menuData.name" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">key:</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" v-model="menuData.key" required>
           </div>
         </div>
         <div class="form-group">
@@ -23,9 +29,9 @@ export default {
   name: 'add',
   data () {
     return {
-      shopsList: [],
-      goodData: {
-        name: ''
+      menuData: {
+        name: '',
+        key: ''
       }
     }
   },
@@ -34,12 +40,13 @@ export default {
       this.$ajax(
         {
           method: 'get',
-          url: '/cms/searchGoodsType?id=' + this.$route.query.id
+          url: '/cms/searchMenuClass?id=' + this.$route.query.id
         }
         ).then(
           function (res) {
             if (res.data.code === 0) {
-              this.goodData = res.data.data
+              this.menuData = res.data.data
+              this.menuData.id = this.$route.query.id
             }
           }
           .bind(this)
@@ -51,16 +58,16 @@ export default {
       this.$ajax(
         {
           method: 'post',
-          url: '/cms/saveGoodsType',
-          data: this.goodData
+          url: '/cms/saveMenuClass',
+          data: this.menuData
         }
       ).then(
         function (res) {
           if (res.data.code === 0) {
-            this.msgShow(res.data.message)
-            this.$router.push({name: 'goodManagertypeSearch'})
+            this.$parent.msgShow(res.data.message)
+            this.$router.push({name: 'optionManagermenuClasssearch'})
           } else {
-            this.msgShow(res.data.message)
+            this.$parent.msgShow(res.data.message)
           }
         }
         .bind(this)

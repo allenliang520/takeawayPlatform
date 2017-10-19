@@ -61,7 +61,7 @@
               <td>
                 <button class="btn btn-default btn-sm" v-if="o.status==1" @click="statusCheck(o,0)">无效</button>
                 <button class="btn btn-default btn-sm" v-if="o.status==0" @click="statusCheck(o,1)">生效</button>
-                <router-link class="btn btn-default btn-sm" :to="{name:'shopManageradd',params:{classKey:'shopManager',key:'add'},query:{id:o.id}}">
+                <router-link class="btn btn-default btn-sm" :to="{name:'goodManageradd',query:{id:o.id}}">
                   编辑
                 </router-link>
               </td>

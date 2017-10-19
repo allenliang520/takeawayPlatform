@@ -5,7 +5,6 @@ import Login from '@/components/Login'
 import Regist from '@/components/Regist'
 import Profile from '@/components/Profile'
 import Cms from '@/components/Cms/Cms'
-import MenuObj from '@/menu.config'
 
 Vue.use(Router)
 export default new Router({
@@ -32,8 +31,8 @@ export default new Router({
     },
     {
       path: '/cms',
+      name: 'cms',
       component: Cms,
-      children: MenuObj.menuRouter
     }
   ]
 })

@@ -18,6 +18,7 @@
 <script>
 import Vue from 'vue'
 import Topbar from './components/topbar'
+import Cms from '@/components/Cms/Cms'
 export default {
   name: 'app',
   components: { Topbar },
@@ -39,11 +40,14 @@ export default {
         'transition-duration': 150,
         keyboard: true,
         text: ''
-      }
+      },
+      menuList: [],
+      menuRouter: []
     }
   },
   methods: {
     modalShow: function (option) {
+      console.log(this)
       var defaultOption = {
         title: '',
         size: 'sm',
@@ -75,10 +79,53 @@ export default {
     msgShow: function (option) {
       this.msgConfig.text = option
       this.msgOpen = true
+    },
+    addMenu: function (menu) {
+      var imp = {}
+      menu.forEach(function (t) {
+        t.children.forEach(function (n) {
+          var o = {}
+          o.name = t.classKey + n.key
+          o.path = o.name
+          o.classKey = t.classKey
+          o.key = n.key
+          if (n.params) {
+            for (var k = 0; k < n.params.length; k++) {
+              o.path += (k === 0 ? '?' : '&') + '' + n.params[k]
+            }
+          }
+          imp[t.classKey + n.key] = resolve => require(['@/components/Cms/' + t.classKey + '/' + n.key], resolve)
+          o.component = imp[t.classKey + n.key]
+          this.menuRouter.push(o)
+        }, this)
+      }, this)
+      var o2 = [{
+        path: '/cms',
+        name: 'cms',
+        component: Cms,
+        children: this.menuRouter
+      }]
+      this.$router.addRoutes(o2)
+      this.showMenu = true
+    },
+    getMenu: function () {
+      this.$ajax(
+        {
+          method: 'get',
+          url: '/cms/searchAllUserMenu'
+        }
+        ).then(
+          function (res) {
+            if (res.data.code === 0) {
+              this.$set(this, 'menuList', res.data.data)
+              this.addMenu(res.data.data)
+            }
+          }
+          .bind(this)
+        )
     }
   },
   mounted () {
-    console.log(this.modalConfig)
     Vue.prototype.modalShow = this.modalShow
     Vue.prototype.msgShow = this.msgShow
     this.$ajax(
@@ -91,8 +138,13 @@ export default {
         if (res.data.code === 0) {
           this.GLOBAL.userinfo = res.data.data
           this.userinfo = res.data.data
+          this.getMenu()
         } else {
-          this.$router.push('login')
+          if (this.$route.name !== 'Login') {
+            this.$router.push({name: 'Login', query: {to: this.$route.path, query: encodeURI(JSON.stringify(this.$route.query))}})
+          } else {
+            this.$router.push({name: 'Login', query: this.$route.query})
+          }
         }
         this.pageShow = true
       }

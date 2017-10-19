@@ -28,6 +28,7 @@ Vue.component('page-limit', {
       paginationOption: {
         limitSize: 10,
         page: 1,
+        limit: 10,
         totalPage: 1,
         maxSize: 8,
         size: 'md',
@@ -39,23 +40,37 @@ Vue.component('page-limit', {
     this.$watch('data', function (newVal, oldVal) {
       this.init()
     })
+    this.$watch('paginationOption.limitSize', function (newVal, oldVal) {
+      if (newVal && !isNaN(newVal) && newVal > 0) {
+        this.init()
+      }
+    })
   },
   methods: {
     init: function () {
       this.paginationOption = Object.assign({}, this.paginationOption, this.option)
-      this.paginationOption.limitSize = this.limitSize || this.paginationOption.limitSize
+      if (this.limitSize === 0 || this.paginationOption.limitSize ===0) {
+        this.paginationOption.limit = 10
+      } else {
+        this.paginationOption.limit = this.limitSize || this.paginationOption.limitSize
+      }
       if (Array.isArray(this.data)) {
-        var p = Math.floor(this.data.length / this.paginationOption.limitSize)
-        this.paginationOption.totalPage = p == 0?1:p
+        var p = Math.ceil(this.data.length / this.paginationOption.limit)
+        if (p < this.paginationOption.page) {
+          this.paginationOption.page = 1
+          this.paginationOption.totalPage = p <= 0?1:p
+        } else {
+          this.paginationOption.totalPage = p <= 0?1:p
+        }
       }
     },
     getPageData: function () {
       if (!this.data)
       return false
       var arr = [], pageArr = []
-      for (var k = 0; k < this.paginationOption.limitSize; k++) {
-        if (this.data[(this.paginationOption.page - 1) * this.paginationOption.limitSize + k]) {
-          arr.push(this.data[(this.paginationOption.page - 1) * this.paginationOption.limitSize + k])
+      for (var k = 0; k < this.paginationOption.limit; k++) {
+        if (this.data[(this.paginationOption.page - 1) * this.paginationOption.limit + k]) {
+          arr.push(this.data[(this.paginationOption.page - 1) * this.paginationOption.limit + k])
         } else {
           break
         }
@@ -64,7 +79,8 @@ Vue.component('page-limit', {
     }
   }
 })
-new Vue({
+
+const $vm = new Vue({
   el: '#app',
   router,
   template: '<App/>',
@@ -80,3 +96,4 @@ new Vue({
     window.$vue = this
   }
 })
+export default $vm

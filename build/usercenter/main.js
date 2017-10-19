@@ -43,6 +43,7 @@ uc.post('/toLogin', function (req, res) {
   if (user) {
     if (user.password === _sqlclass.getMd5Password(body.password)) {
       user.loginTime = loginTime
+      user.logintime = (new Date()).format('yyyy-MM-dd hh:mm:ss')
       user.token = _sqlclass.getUserToken( user.username , user.loginTime  )
       result.code = 0
       result.message = '登陆成功'
@@ -51,9 +52,9 @@ uc.post('/toLogin', function (req, res) {
       result.data.realname = user.realname;
       result.data.tel = user.tel;
       result.data.qq = user.qq;
+      result.data.roleId = user.roleId;
       result.data.time = user.loginTime;
       result.data.token = user.token;
-       
       _sqlclass.setLoginSession(req, user)
     } else {
       result.code = -2
@@ -105,9 +106,12 @@ uc.post('/toRegist', function (req, res) {
     user.tel = encodeURI(body.tel)
     user.realname = encodeURI(body.realname)
     user.qq = encodeURI(body.qq) || ''
+    user.createtime = (new Date()).format('yyyy-MM-dd hh:mm:ss')
+    user.logintime = user.createtime
     _sqlclass.createUser(user,function(status){
       if(status){
         user.loginTime = (new Date()).getTime()
+        user.id = memory.users.searchByKey('username', user.username)
         user.token = _sqlclass.getUserToken( user.username , user.loginTime)
         result.code = 0
         result.message = 'Sign up success'
@@ -116,6 +120,7 @@ uc.post('/toRegist', function (req, res) {
         result.data.realname = user.realname;
         result.data.tel = user.tel;
         result.data.qq = user.qq;
+        result.data.roleId = user.roleId;
         result.data.time = user.loginTime;
         result.data.token = user.token;
         _sqlclass.setLoginSession(req, user)
@@ -201,6 +206,7 @@ uc.get('/getUserinfo', function (req, res) {
       result.data.realname = user.realname
       result.data.tel = user.tel;
       result.data.qq = user.qq;
+      result.data.roleId = user.roleId;
       result.data.time = user.loginTime;
       result.data.token = _sqlclass.getUserToken( user.username , user.loginTime);
       

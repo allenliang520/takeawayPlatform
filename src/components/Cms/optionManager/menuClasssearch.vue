@@ -1,16 +1,19 @@
 <template>
   <div id="search">
-    <page-limit :data="shopsList" >
+    <form class="form-inline">
+      <div class="form-group">
+        <router-link class="btn btn-default" :to="{name:'optionManagermenuClassadd'}">
+          添加
+        </router-link>
+      </div>
+    </form>
+    <page-limit :data="menuList" >
       <template slot="pagedata" scope="props">        
         <table class="table table-striped table-hover ">
           <thead>
             <tr>
               <th>#</th>
               <th>名称</th>
-              <th>地址</th>
-              <th>电话</th>
-              <th>状态</th>
-              <th>创建时间</th>
               <th>操作</th>
             </tr>
           </thead>
@@ -18,14 +21,10 @@
             <tr v-for="o in props.data" :key="o.id">
               <td>{{o.id}}</td>
               <td>{{o.name}}</td>
-              <td>{{o.address}}</td>
-              <td><span class="" v-for="p in o.phone" :key="p">{{p}},&nbsp;</span> </td>
-              <td :class="{'text-danger':o.status==0,'text-success':o.status==1}">{{o.status==0?'无效':'有效'}}</td>
-              <td>{{o.createtime}}</td>
               <td>
                 <button class="btn btn-default btn-sm" v-if="o.status==1" @click="statusCheck(o,0)">无效</button>
                 <button class="btn btn-default btn-sm" v-if="o.status==0" @click="statusCheck(o,1)">生效</button>
-                <router-link class="btn btn-default btn-sm" :to="{name:'shopManageradd',query:{id:o.id}}">
+                <router-link class="btn btn-default btn-sm" :to="{name:'optionManagermenuClassadd',query:{id:o.id}}">
                   编辑
                 </router-link>
               </td>
@@ -50,19 +49,19 @@ export default {
   name: 'search',
   data () {
     return {
-      shopsList: []
+      menuList: []
     }
   },
   mounted () {
     this.$ajax(
       {
         method: 'get',
-        url: '/cms/searchAllShop?status=-1'
+        url: '/cms/searchAllMenu?status=-1'
       }
       ).then(
         function (res) {
           if (res.data.code === 0) {
-            this.shopsList = res.data.data
+            this.menuList = res.data.data.menuClass
           }
         }
         .bind(this)
@@ -74,16 +73,16 @@ export default {
         backdrop: true,
         text: '确定设置 ' + o.name + ' ' + (t === 0 ? '无效?' : '有效?'),
         okFn: function () {
-          this.setShopStatus(o, t)
+          this.setMenuStatus(o, t)
         }.bind(this)
       })
     },
-    setShopStatus: function (o, t) {
+    setMenuStatus: function (o, t) {
       console.log(o)
       this.$ajax(
         {
           method: 'post',
-          url: '/cms/setShopStatus',
+          url: '/cms/setMenuStatus',
           data: {
             status: t,
             id: o.id

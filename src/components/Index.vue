@@ -2,8 +2,8 @@
   <div id="index">
     <div id="dmContent">
       <div class="con">
-        <div class="videoConver"></div>
-        <video :src="ioData.videoData.src" :controls="ioData.videoData.control" id="video"></video>
+        <div class="videoConver" @dblclick="fullVideo"></div>
+        <video :src="ioData.videoData.src" :controls="ioData.videoData.control" id="video" ></video>
         <div class="dm-row" v-for="row in ioData.msgGet">
           <span class="dm-p dm-run" v-for="p in row" v-if="p.text" v-text="p.user.realname + ': ' + p.text" ></span>
           <span class="dm-p dm-run" v-for="p in row" v-if="!p.text" v-text="'Welcome '+p.user.realname + ' login'" ></span>
@@ -152,10 +152,6 @@ export default {
     },
     startVideo: function (data) {
       this.ioData.videoData.em = document.getElementById('video')
-      this.$watch('ioData.videoData.em.controls', function (nv, ov) {
-        this.ioData.videoData.em.controls = false
-      }.bind(this)
-      )
       this.ioData.videoData.src = '/static/video/' + data.name
       this.ioData.videoData.em.currentTime = data.currentTime
       this.ioData.videoData.em.load()
@@ -199,6 +195,8 @@ export default {
   },
   destroyed () {
     if (this.io) {
+      this.ioData.videoData.em.pause()
+      this.ioData.videoData.src = ''
       this.io.close()
     }
   },
@@ -217,7 +215,9 @@ export default {
 #dmContent .dm-row .dm-p.dm-run{animation: dm-run 15s linear 0s 1 forwards }
 #dmContent .con{position: relative;left: 0;top: 0;height: 100%;width: 100%;}
 #dmControl{position: fixed;left: 50%;bottom: 5%;height: 35px;width: 40%;box-sizing: border-box;transform: translateX(-50%);}
-
+video::-webkit-media-controls {
+  display:none !important;
+}
 @keyframes dm-run{
   0%{left: 100%;transform: translate3d(0%,0,0);}
   100%{left: 0%;transform: translate3d(-100%,0,0)}

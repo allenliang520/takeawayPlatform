@@ -29,6 +29,35 @@ fn.splitString = function (str,k) {
 }
 
 
+Array.prototype.filterByKey = function (k, v) {
+    var o = this
+    var newArr = []
+    for (var i = 0; i < o.length; i++) {
+        if( o[i][k] == v )
+        newArr.push(o[i])
+    }
+    return newArr
+}
+Array.prototype.objFilterByKey = function (k) {
+    var o = this
+    var newArr = []
+    if (Array.isArray(k)) {        
+        for (var i = 0; i < o.length; i++) {
+            var newO = {}
+            for (var n = 0; n < k.length; n++) {
+                newO[k[n]] = o[i][k[n]]
+            }
+            newArr.push(newO)
+        }
+    } else if (typeof k === 'string') {
+        for (var i = 0; i < o.length; i++) {
+            var newO = {}
+            newO[k] = o[i][k]
+            newArr.push(newO)
+        }
+    }
+    return newArr
+}
 Array.prototype.searchByKey = function (k, v) {
 	var o = this
 	for (var i = 0 ;i < o.length ;i++) {

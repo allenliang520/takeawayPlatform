@@ -30,6 +30,14 @@ Array.prototype.searchByKey = function (k, v) {
 	}
 	return
 }
+Array.prototype.searchIndex = function (v) {
+	var o = this
+	for (var i = 0 ;i < o.length ;i++) {
+		if (o[i] == v)
+			return i
+	}
+	return
+}
 Date.prototype.format = function(fmt)
 {
   var o = {
