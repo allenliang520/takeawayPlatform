@@ -21,7 +21,7 @@
               <div class="input-group">
                 <input type="text" class="form-control" v-model="shopData.phone[index]">
                 <div class="input-group-btn">
-                  <button type="button" class="btn btn-default" v-if="shopData.phone.length>0" @click="removePhone(index)">Remove</button>
+                  <button type="button" class="btn btn-default" v-if="shopData.phone.length>1" @click="removePhone(index)">Remove</button>
                   <button type="button" class="btn btn-default" v-if="index==shopData.phone.length-1" @click="addPhone()">Add</button>
                 </div>
               </div>

@@ -152,8 +152,10 @@ export default {
         }
         ).then(
           function (res) {
-            if (res.body.code === 0) {
+            console.log(res)
+            if (res.data.code === 0) {
               this.userList.searchByKey('id', this.userData.id).roleId = this.userData.roleId
+              this.userList.searchByKey('id', this.userData.id).rolename = this.roleList.searchByKey('id', this.userData.roleId).name
             }
             this.modalOpen = false
             this.msgShow(res.data.message)

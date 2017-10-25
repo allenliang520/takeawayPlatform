@@ -171,7 +171,7 @@ export default {
           function (res) {
             if (res.data.code === 0) {
               this.goodData = res.data.data
-              this.goodData.userableWeeksArr = this.weekToObj(this.goodData.userableWeeks.split(','))
+              this.goodData.userableWeeksArr = this.weekToObj(this.goodData.userableWeeks)
             }
           }
           .bind(this)

@@ -38,6 +38,21 @@
           </div>
         </div>
         <div class="form-group">
+          <label class="col-sm-2 control-label">接口:</label>
+          <div class="col-sm-10">
+            <div v-for="(o,index) in menuData.authority" :key="index">
+              <div class="input-group">
+                <input type="text" class="form-control" v-model="menuData.authority[index]">
+                <div class="input-group-btn">
+                  <button type="button" class="btn btn-default" v-if="menuData.authority.length>1" @click="removeAuthority(index)">Remove</button>
+                  <button type="button" class="btn btn-default" v-if="index==menuData.authority.length-1" @click="addAuthority()">Add</button>
+                </div>
+              </div>
+              <br>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
           <label class="col-sm-2 control-label">状态:</label>
           <div class="col-sm-10">
             <select name="" id="" class="form-control" v-model="menuData.status">
@@ -69,6 +84,7 @@ export default {
         classKey: '',
         activeKey: '',
         params: '',
+        authority: [''],
         status: 1
       }
     }
@@ -96,6 +112,9 @@ export default {
         ).then(
           function (res) {
             if (res.data.code === 0) {
+              if (res.data.data.authority.length === 0) {
+                res.data.data.authority = ['']
+              }
               this.menuData = res.data.data
               this.menuData.id = this.$route.query.id
             }
@@ -105,6 +124,12 @@ export default {
     }
   },
   methods: {
+    addAuthority: function () {
+      this.menuData.authority.push('')
+    },
+    removeAuthority: function (index) {
+      this.menuData.authority.splice(index, 1)
+    },
     submitPost: function () {
       this.$ajax(
         {

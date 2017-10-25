@@ -5,10 +5,16 @@
         <div class="form-group">
           <label class="col-sm-2 control-label">权限:</label>
           <div class="col-sm-10">
-            <div class="col-sm-4" v-for="o in menuList" :key="o.id">
+            <div class="col-sm-12" v-for="o in menuList" :key="o.id">
               <div class="checkbox">
                 <input type="checkbox" value="" :checked="isCheck(o.id)" @click="idsToggle(o.id)">
                 <span @click="idsToggle(o.id)">{{o.name}}</span>
+              </div>
+              <div class="authorty col-sm-offset-1" v-if="isCheck(o.id)">
+                <div class="checkbox" v-for="(a,index) in o.authority" :key="index">
+                  <input type="checkbox" value="" :checked="isAuthortyCheck(o.id,a)" @click="authortyToggle(o.id,a)">
+                  <span @click="authortyToggle(o.id,a)">{{a}}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -34,7 +40,8 @@ export default {
     return {
       menuList: [],
       reData: {
-        menuIds: []
+        menuIds: [],
+        authoritys: {}
       }
     }
   },
@@ -62,6 +69,9 @@ export default {
         ).then(
           function (res) {
             if (res.data.code === 0) {
+              if (!res.data.data.authoritys) {
+                res.data.data.authoritys = {}
+              }
               this.reData = res.data.data
             }
           }
@@ -85,14 +95,39 @@ export default {
         this.$delete(this.reData.menuIds, this.reData.menuIds.searchIndex(id))
       }
     },
+    isAuthortyCheck: function (id, a) {
+      if (this.reData.authoritys[id] && this.reData.authoritys[id].indexOf(a) >= 0) {
+        return true
+      }
+      return false
+    },
+    authortyToggle: function (id, a) {
+      if (!this.isAuthortyCheck(id, a)) {
+        if (!Array.isArray(this.reData.authoritys[id])) {
+          this.$set(this.reData.authoritys, id, [])
+        }
+        this.reData.authoritys[id].push(a)
+      } else {
+        this.$delete(this.reData.authoritys[id], this.reData.authoritys[id].searchIndex(a))
+        if (this.reData.authoritys[id].length === 0) {
+          this.$delete(this.reData.authoritys, id)
+        }
+      }
+    },
     idsAll: function () {
       this.reData.menuIds = []
+      this.reData.authoritys = {}
       this.menuList.forEach(function (element) {
         this.reData.menuIds.push(element.id)
+        this.reData.authoritys[element.id] = []
+        element.authority.forEach(function (a) {
+          this.reData.authoritys[element.id].push(a)
+        }, this)
       }, this)
     },
     idsNo: function () {
       this.reData.menuIds = []
+      this.reData.authoritys = {}
     },
     submitPost: function () {
       this.$ajax(
@@ -120,4 +155,5 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.checkbox *{cursor: pointer}
 </style>

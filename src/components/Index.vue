@@ -4,9 +4,9 @@
       <div class="con">
         <div class="videoConver" @dblclick="fullVideo"></div>
         <video :src="ioData.videoData.src" :controls="ioData.videoData.control" id="video" ></video>
-        <div class="dm-row" v-for="row in ioData.msgGet">
-          <span class="dm-p dm-run" v-for="p in row" v-if="p.text" v-text="p.user.realname + ': ' + p.text" ></span>
-          <span class="dm-p dm-run" v-for="p in row" v-if="!p.text" v-text="'Welcome '+p.user.realname + ' login'" ></span>
+        <div class="dm-row" v-for="(row,index) in ioData.msgGet" :key="index">
+          <span class="dm-p dm-run" v-for="(p,index) in row" :key="index" v-if="p.text" v-text="p.user.realname + ': ' + p.text" ></span>
+          <span class="dm-p dm-run" v-for="(p,index) in row" :key="index" v-if="!p.text" v-text="'Welcome '+p.user.realname + ' login'" ></span>
         </div>
       </div>
     </div>
